@@ -6,7 +6,7 @@ class Constants {
 
   static String titleOne = "گیاهان را بهتر از قبل درک کن";
   static String descriptionOne =
-      "در مورد نگه داری گل و گیاهان میتوانی اطلاعات کسب کنی";
+      "در مورد نگه داری گل و گیاهان \nمیتوانی اطلاعات کسب کنی";
 
   static String titleTwo = "با گیاهان جدید اشنا شو";
   static String descriptionTwo =
