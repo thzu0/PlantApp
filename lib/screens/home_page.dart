@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:plant_app_1/const/constants.dart';
+import 'package:plant_app_1/models/plant.dart';
+
+//TODO:Complete this page with all things that we need for it
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -8,8 +12,358 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int selectedIndex = 0;
+
+  final List<Plant> _plantList = Plant.plantList;
+
+  bool toggleIsFavorite(bool isFavorites) {
+    return !isFavorites;
+  }
+
+  final List<String> _plantTypes = [
+    '| پیشنهادی |',
+    '| آپارتمانی |',
+    '| محل کار |',
+    '| گل باغچه ایی |',
+    '| گل سمی |',
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: Text('Home Page')));
+    Size size = MediaQuery.of(context).size;
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            ///===================================
+            /// SEARCH BOX
+            ///===================================
+            Padding(
+              padding: const EdgeInsets.only(top: 25.0),
+              child: Center(
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  width: size.width * 0.9,
+                  decoration: BoxDecoration(
+                    color: Constants.primaryColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(
+                        Icons.mic,
+                        color: Constants.blackColor.withValues(alpha: 0.6),
+                      ),
+
+                      Expanded(
+                        child: Directionality(
+                          textDirection: TextDirection.rtl,
+                          child: TextField(
+                            textAlign: TextAlign.start,
+                            showCursor: false,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.only(right: 5.0),
+                              hintText: 'جستجو...',
+                              border: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                            ),
+                            style: TextStyle(
+                              fontFamily: 'Vazirmatn',
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14.0,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Icon(
+                        Icons.search,
+                        color: Constants.blackColor.withValues(alpha: 0.6),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            ///===================================
+            /// CATEGORY
+            ///===================================
+            Container(
+              padding: const EdgeInsetsDirectional.symmetric(
+                horizontal: 18.0,
+                vertical: 10.0,
+              ),
+              height: 70.0,
+              width: size.width,
+              child: ListView.builder(
+                reverse: true,
+                scrollDirection: Axis.horizontal,
+                itemCount: _plantTypes.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedIndex = index;
+                        });
+                      },
+                      child: Text(
+                        _plantTypes[index],
+                        style: TextStyle(
+                          fontFamily: 'Vazirmatn',
+                          fontSize: 16,
+                          fontWeight: selectedIndex == index
+                              ? FontWeight.bold
+                              : FontWeight.w400,
+                          color: selectedIndex == index
+                              ? Constants.primaryColor
+                              : Constants.blackColor,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            ///===================================
+            /// PRODUCT
+            ///===================================
+            SizedBox(
+              height: size.height * 0.3,
+              child: ListView.builder(
+                itemCount: _plantList.length,
+                scrollDirection: Axis.horizontal,
+                reverse: true,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: EdgeInsets.symmetric(horizontal: 18.0),
+                    width: 200.0,
+                    decoration: BoxDecoration(
+                      color: Constants.primaryColor.withValues(alpha: 0.8),
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    child: Stack(
+                      children: <Widget>[
+                        Positioned(
+                          top: 10,
+                          right: 20.0,
+                          child: Container(
+                            height: 40.0,
+                            width: 40.0,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(50.0),
+                            ),
+                            child: IconButton(
+                              onPressed: () {},
+                              icon: Icon(
+                                _plantList[index].isFavorated == true
+                                    ? Icons.favorite
+                                    : Icons.favorite_border_outlined,
+                                color: _plantList[index].isFavorated == true
+                                    ? Constants.primaryColor
+                                    : Constants.blackColor,
+                                size: 20.0,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          top: 50,
+                          right: 50,
+                          left: 50,
+                          bottom: 50,
+                          child: Image.asset(_plantList[index].imageURL),
+                        ),
+                        Positioned(
+                          bottom: 15,
+                          left: 20,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 2.0,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+
+                            child: Text(
+                              r'$' + _plantList[index].price.toString(),
+                              style: TextStyle(
+                                color: Constants.primaryColor,
+                                fontSize: 15.0,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 15.0,
+                          right: 20.0,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: <Widget>[
+                              Text(
+                                _plantList[index].category,
+                                style: TextStyle(
+                                  fontFamily: 'Vazirmatn',
+                                  color: Colors.white70,
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              Text(
+                                _plantList[index].plantName,
+                                style: TextStyle(
+                                  fontFamily: 'Vazirmatn',
+                                  color: Colors.white70,
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            ///===================================
+            ///  TEXT
+            ///===================================
+            Container(
+              alignment: Alignment.centerRight,
+              padding: EdgeInsets.only(top: 30.0, bottom: 15.0, right: 20.0),
+              child: Text(
+                'گیاهان جدید',
+                style: TextStyle(
+                  fontFamily: 'Vazirmatn',
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+
+            ///===================================
+            ///  NEW PLANT - PRODUCT 2
+            ///===================================
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 18.0),
+              height: size.height,
+              child: ListView.builder(
+                itemCount: _plantList.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Constants.primaryColor.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    height: 85,
+                    width: size.width,
+                    margin: const EdgeInsets.only(bottom: 10, top: 10),
+                    padding: const EdgeInsets.only(left: 10, top: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            SizedBox(
+                              height: 20,
+                              child: Image.asset(
+                                'assets/images/PriceUnit-green.png',
+                              ),
+                            ),
+                            const SizedBox(width: 5.0),
+
+                            Text(
+                              _plantList[index].price.toString().farsiNumber,
+                              style: TextStyle(
+                                fontFamily: 'Vazirmatn',
+                                fontWeight: FontWeight.bold,
+
+                                color: Constants.primaryColor,
+                                fontSize: 20.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Stack(
+                          clipBehavior: Clip.none,
+                          children: <Widget>[
+                            Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                color: Constants.primaryColor.withValues(
+                                  alpha: 0.8,
+                                ),
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 5.0,
+                              right: 0,
+                              left: 0,
+                              child: SizedBox(
+                                height: 80,
+                                child: Image.asset(_plantList[index].imageURL),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 5.0,
+                              right: 80.0,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: <Widget>[
+                                  Text(
+                                    _plantList[index].category,
+                                    style: TextStyle(
+                                      fontFamily: 'Vazirmatn',
+                                      fontSize: 14.0,
+                                    ),
+                                  ),
+                                  Text(
+                                    _plantList[index].plantName,
+                                    style: TextStyle(
+                                      fontFamily: 'Vazirmatn',
+                                      fontSize: 19.0,
+                                      color: Constants.blackColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+extension FarsiNumberExtensions on String {
+  String get farsiNumber {
+    const english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const farsi = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+    String text = this;
+    for (int i = 0; i < english.length; i++) {
+      text = text.replaceAll(english[i], farsi[i]);
+    }
+    return text;
   }
 }
