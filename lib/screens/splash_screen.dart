@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:plant_app_1/const/constants.dart';
+import 'package:plant_app_1/screens/root.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -125,7 +126,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const LoginPage(),
+                          builder: (context) => const RootPage(),
                         ),
                       );
                     }
@@ -191,14 +192,5 @@ class CreatePage extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold();
   }
 }
