@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   animated_bottom_navigation_bar: ^1.4.1
   page_transition: ^2.2.2
+  mobile_scanner: ^7.4.0
 
 dev_dependencies:
   flutter_test:
