@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:plant_app_1/const/constants.dart';
+
+import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:plant_app_1/screens/camera_page.dart';
 
 class ScanPage extends StatefulWidget {
   const ScanPage({super.key});
@@ -9,6 +13,8 @@ class ScanPage extends StatefulWidget {
 }
 
 class _ScanPageState extends State<ScanPage> {
+  MobileScannerController cameraController = MobileScannerController();
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -72,7 +78,21 @@ class _ScanPageState extends State<ScanPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: .center,
                   children: [
-                    Image.asset('assets/images/code-scan.png', height: 150.0),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            child: const CameraPage(),
+                            type: PageTransitionType.fade,
+                          ),
+                        );
+                      },
+                      child: Image.asset(
+                        'assets/images/code-scan.png',
+                        height: 150.0,
+                      ),
+                    ),
                     const SizedBox(height: 25.0),
                     Text(
                       'برای اسکن گیاه کلیک کنید',

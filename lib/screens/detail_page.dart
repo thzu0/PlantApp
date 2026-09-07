@@ -5,17 +5,28 @@ import 'package:plant_app_1/widgets/extentions.dart';
 
 class DetailPage extends StatefulWidget {
   final int plantId;
-  const DetailPage({super.key, required this.plantId});
+  final VoidCallback onCartTap;
+
+  const DetailPage({super.key, required this.plantId, required this.onCartTap});
 
   @override
   State<DetailPage> createState() => _DetailPageState();
 }
 
 class _DetailPageState extends State<DetailPage> {
+  bool toggleIsSelected(bool isSelected) {
+    return !isSelected;
+  }
+
+  int get cartItemCount {
+    return Plant.plantList.where((plant) => plant.isSelected).length;
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     List<Plant> plantList = Plant.plantList;
+
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -58,16 +69,25 @@ class _DetailPageState extends State<DetailPage> {
                     borderRadius: BorderRadius.circular(50.0),
                     color: Constants.primaryColor.withValues(alpha: 0.15),
                   ),
-                  child: Icon(
-                    plantList[widget.plantId].isFavorated == true
-                        ? Icons.favorite
-                        : Icons.favorite_border,
-                    color: Constants.primaryColor,
+                  child: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        plantList[widget.plantId].isFavorated =
+                            !plantList[widget.plantId].isFavorated;
+                      });
+                    },
+                    icon: Icon(
+                      plantList[widget.plantId].isFavorated
+                          ? Icons.favorite
+                          : Icons.favorite_border,
+                      color: Constants.primaryColor,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
+
           Positioned(
             top: 130.0,
             right: 20.0,
@@ -128,6 +148,7 @@ class _DetailPageState extends State<DetailPage> {
               ),
             ),
           ),
+
           Positioned(
             bottom: 0,
             left: 0,
@@ -235,23 +256,61 @@ class _DetailPageState extends State<DetailPage> {
         height: 50.0,
         child: Row(
           children: [
-            Container(
-              height: 50,
-              width: 50,
-              decoration: BoxDecoration(
-                color: Constants.primaryColor.withValues(alpha: 0.5),
-                borderRadius: BorderRadius.circular(50.0),
-                boxShadow: [
-                  BoxShadow(
-                    offset: Offset(0.0, 1.0),
-                    blurRadius: 5.0,
-                    color: Constants.primaryColor.withValues(alpha: 0.3),
+            InkWell(
+              onTap: () {
+                widget.onCartTap();
+                Navigator.pop(context);
+              },
+              borderRadius: BorderRadius.circular(50.0),
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    height: 50,
+                    width: 50,
+                    decoration: BoxDecoration(
+                      color: Constants.primaryColor.withValues(alpha: 0.5),
+                      borderRadius: BorderRadius.circular(50.0),
+                      boxShadow: [
+                        BoxShadow(
+                          offset: Offset(0.0, 1.0),
+                          blurRadius: 5.0,
+                          color: Constants.primaryColor.withValues(alpha: 0.3),
+                        ),
+                      ],
+                    ),
+                    child: Icon(Icons.shopping_cart, color: Colors.white),
                   ),
+
+                  if (cartItemCount > 0)
+                    Positioned(
+                      right: -5,
+                      top: -5,
+                      child: Container(
+                        height: 22,
+                        width: 22,
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Text(
+                            cartItemCount.toString(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
-              child: Icon(Icons.shopping_cart, color: Colors.white),
             ),
+
             SizedBox(width: 20.0),
+
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
@@ -265,14 +324,134 @@ class _DetailPageState extends State<DetailPage> {
                     ),
                   ],
                 ),
-                child: const Center(
-                  child: Text(
-                    'افزودن به سبد خرید',
-                    style: TextStyle(
-                      fontFamily: 'Vazirmatn',
-                      color: Colors.white,
+                child: Center(
+                  child: InkResponse(
+                    onTap: () {
+                      setState(() {
+                        bool isSelected = toggleIsSelected(
+                          plantList[widget.plantId].isSelected,
+                        );
+                        plantList[widget.plantId].isSelected = isSelected;
+                      });
+                      if (plantList[widget.plantId].isSelected) {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                              ),
+                              contentPadding: const EdgeInsets.fromLTRB(
+                                25.0,
+                                25.0,
+                                25.0,
+                                15.0,
+                              ),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ///==================================
+                                  /// SUCCESS ICON
+                                  ///==================================
+                                  Container(
+                                    height: 70.0,
+                                    width: 70.0,
+                                    decoration: BoxDecoration(
+                                      color: Constants.primaryColor.withValues(
+                                        alpha: 0.15,
+                                      ),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      Icons.check,
+                                      size: 40.0,
+                                      color: Constants.primaryColor,
+                                    ),
+                                  ),
 
-                      fontSize: 22,
+                                  const SizedBox(height: 20.0),
+
+                                  ///==================================
+                                  /// TITLE
+                                  ///==================================
+                                  Text(
+                                    'با موفقیت افزوده شد',
+                                    textDirection: TextDirection.rtl,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: 'Vazirmatn',
+                                      fontSize: 21.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Constants.primaryColor,
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 12.0),
+
+                                  ///==================================
+                                  /// MESSAGE
+                                  ///==================================
+                                  Text(
+                                    'گیاه ${plantList[widget.plantId].plantName} به سبد خرید شما افزوده شد.',
+                                    textDirection: TextDirection.rtl,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: 'Vazirmatn',
+                                      fontSize: 17.0,
+                                      height: 1.7,
+                                      color: Constants.blackColor.withValues(
+                                        alpha: 0.7,
+                                      ),
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 20.0),
+
+                                  ///==================================
+                                  /// OK BUTTON
+                                  ///==================================
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 45.0,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Constants.primaryColor,
+                                        elevation: 0.0,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            12.0,
+                                          ),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        'باشه',
+                                        style: TextStyle(
+                                          fontFamily: 'Vazirmatn',
+                                          fontSize: 17.0,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      }
+                    },
+                    child: Text(
+                      'افزودن به سبد خرید',
+                      style: TextStyle(
+                        fontFamily: 'Vazirmatn',
+                        color: Colors.white,
+                        fontSize: 22,
+                      ),
                     ),
                   ),
                 ),
@@ -288,6 +467,7 @@ class _DetailPageState extends State<DetailPage> {
 class PlantFeature extends StatelessWidget {
   final String title;
   final String plantFeature;
+
   const PlantFeature({
     super.key,
     required this.title,

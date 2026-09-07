@@ -4,9 +4,12 @@ import 'package:plant_app_1/const/constants.dart';
 import 'package:plant_app_1/models/plant.dart';
 import 'package:plant_app_1/screens/detail_page.dart';
 import 'package:plant_app_1/widgets/extentions.dart';
+import 'package:plant_app_1/widgets/plant_widget.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final VoidCallback onCartTap;
+
+  const HomePage({super.key, required this.onCartTap});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -136,6 +139,7 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               height: size.height * 0.3,
               child: ListView.builder(
+                physics: const BouncingScrollPhysics(),
                 itemCount: _plantList.length,
                 scrollDirection: Axis.horizontal,
                 reverse: true,
@@ -145,7 +149,10 @@ class _HomePageState extends State<HomePage> {
                       Navigator.push(
                         context,
                         PageTransition(
-                          child: DetailPage(plantId: _plantList[index].plantId),
+                          child: DetailPage(
+                            plantId: _plantList[index].plantId,
+                            onCartTap: widget.onCartTap,
+                          ),
                           type: PageTransitionType.rightToLeft,
                         ),
                       );
@@ -209,7 +216,6 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(20.0),
                               ),
-
                               child: Text(
                                 r'$' + _plantList[index].price.toString(),
                                 style: TextStyle(
@@ -277,106 +283,13 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.symmetric(horizontal: 18.0),
               height: size.height,
               child: ListView.builder(
+                physics: const BouncingScrollPhysics(),
                 itemCount: _plantList.length,
                 itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        PageTransition(
-                          child: DetailPage(plantId: _plantList[index].plantId),
-                          type: PageTransitionType.rightToLeft,
-                        ),
-                      );
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Constants.primaryColor.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      height: 85,
-                      width: size.width,
-                      margin: const EdgeInsets.only(bottom: 10, top: 10),
-                      padding: const EdgeInsets.only(left: 10, top: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              SizedBox(
-                                height: 20,
-                                child: Image.asset(
-                                  'assets/images/PriceUnit-green.png',
-                                ),
-                              ),
-                              const SizedBox(width: 5.0),
-
-                              Text(
-                                _plantList[index].price.toString().farsiNumber,
-                                style: TextStyle(
-                                  fontFamily: 'Vazirmatn',
-                                  fontWeight: FontWeight.bold,
-
-                                  color: Constants.primaryColor,
-                                  fontSize: 20.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Stack(
-                            clipBehavior: Clip.none,
-                            children: <Widget>[
-                              Container(
-                                width: 60,
-                                height: 60,
-                                decoration: BoxDecoration(
-                                  color: Constants.primaryColor.withValues(
-                                    alpha: 0.8,
-                                  ),
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 5.0,
-                                right: 0,
-                                left: 0,
-                                child: SizedBox(
-                                  height: 80,
-                                  child: Image.asset(
-                                    _plantList[index].imageURL,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 5.0,
-                                right: 80.0,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: <Widget>[
-                                    Text(
-                                      _plantList[index].category,
-                                      style: TextStyle(
-                                        fontFamily: 'Vazirmatn',
-                                        fontSize: 14.0,
-                                      ),
-                                    ),
-                                    Text(
-                                      _plantList[index].plantName,
-                                      style: TextStyle(
-                                        fontFamily: 'Vazirmatn',
-                                        fontSize: 19.0,
-                                        color: Constants.blackColor,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+                  return NewPlantWidget(
+                    plantList: _plantList,
+                    index: index,
+                    onCartTap: widget.onCartTap,
                   );
                 },
               ),
