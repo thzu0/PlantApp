@@ -3,7 +3,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:plant_app_1/const/constants.dart';
 import 'package:plant_app_1/models/plant.dart';
 import 'package:plant_app_1/screens/detail_page.dart';
-import 'package:plant_app_1/widgets/extentions.dart';
+
 import 'package:plant_app_1/widgets/plant_widget.dart';
 
 class HomePage extends StatefulWidget {

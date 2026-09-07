@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 class QRScannerOverlay extends StatelessWidget {
-  const QRScannerOverlay({Key? key, required this.overlayColour})
-    : super(key: key);
+  const QRScannerOverlay({super.key, required this.overlayColour});
 
   final Color overlayColour;
 
@@ -142,7 +141,6 @@ class OverlayWithHolePainter extends CustomPainter {
   }
 }
 
-@override
 bool shouldRepaint(CustomPainter oldDelegate) {
   return false;
 }
