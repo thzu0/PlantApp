@@ -1,5 +1,3 @@
-//todos solving for any items that we added in to the card page
-
 import 'package:flutter/material.dart';
 import 'package:plant_app_1/const/constants.dart';
 import 'package:plant_app_1/models/plant.dart';
@@ -21,6 +19,10 @@ class CardPage extends StatefulWidget {
 }
 
 class _CardPageState extends State<CardPage> {
+  int get totalPrice {
+    return widget.addToCartPlants.fold(0, (sum, plant) => sum + plant.price);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,8 +89,7 @@ class _CardPageState extends State<CardPage> {
                                   ),
                                   const SizedBox(width: 8.0),
                                   Text(
-                                    '5000'
-                                        .farsiNumber, //todos solving for any items that we added in to the card page
+                                    totalPrice.toString().farsiNumber,
                                     style: TextStyle(
                                       fontFamily: 'Vazirmatn',
                                       color: Constants.primaryColor,
