@@ -37,11 +37,19 @@ dependencies:
   animated_bottom_navigation_bar: ^1.4.1
   page_transition: ^2.2.2
   mobile_scanner: 7.3.0
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/launcher_icon/icon-new.png"
  
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+
+  flutter_launcher_icons: ^0.14.4
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
